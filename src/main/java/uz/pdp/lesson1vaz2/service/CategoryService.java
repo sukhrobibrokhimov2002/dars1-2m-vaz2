@@ -22,17 +22,15 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     public ApiResult add(CategoryDto categoryDto) {
-        List<Language> languageList = new ArrayList<>();
-        List<Integer> languageIds = categoryDto.getLanguageList();
-        for (Integer languageId : languageIds) {
-            Optional<Language> optionalLanguage = languageRepository.findById(languageId);
-            if (!optionalLanguage.isPresent())
-                return new ApiResult("Language not found", false);
-            languageList.add(optionalLanguage.get());
+        Integer languageId = categoryDto.getLanguageId();
+        Optional<Language> optionalLanguage = languageRepository.findById(languageId);
+        if (!optionalLanguage.isPresent()) {
+            return new ApiResult("Language not found", false);
         }
+
         Category category = new Category();
         category.setDescription(categoryDto.getDescription());
-        category.setLanguageList(languageList);
+        category.setLanguage(optionalLanguage.get());
         category.setName(categoryDto.getName());
         categoryRepository.save(category);
         return new ApiResult("Successfully added", true);
@@ -62,18 +60,14 @@ public class CategoryService {
 
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (!optionalCategory.isPresent()) return new ApiResult("Category not found", false);
+        Optional<Language> optionalLanguage = languageRepository.findById(categoryDto.getLanguageId());
+        if (!optionalLanguage.isPresent()) return new ApiResult("Language not found", false);
 
-        List<Language> editedLanguageList = new ArrayList<>();
-        List<Integer> languageIds = categoryDto.getLanguageList();
-        for (Integer languageId : languageIds) {
-            Optional<Language> optionalLanguage = languageRepository.findById(languageId);
-            if (!optionalLanguage.isPresent()) return new ApiResult("Language not found", false);
-            editedLanguageList.add(optionalLanguage.get());
-        }
+
         Category category = optionalCategory.get();
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
-        category.setLanguageList(editedLanguageList);
+        category.setLanguage(optionalLanguage.get());
         categoryRepository.save(category);
         return new ApiResult("Successfully edited", true);
 

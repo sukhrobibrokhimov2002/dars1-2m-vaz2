@@ -18,7 +18,7 @@ public class Category {
     @Column(nullable = false)
     private String name;
     private String description;
-    @ManyToMany
-    private List<Language> languageList;
+    @ManyToOne
+    private Language language;
 
 }
