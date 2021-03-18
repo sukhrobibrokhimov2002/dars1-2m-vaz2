@@ -19,6 +19,6 @@ public class TaskDto {
     @NotNull(message = "hint must not empty")
     private String hint;
     private String method;
-    private Integer languageId;
+    private Integer categoryId;
 
 }

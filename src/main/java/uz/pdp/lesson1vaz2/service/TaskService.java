@@ -2,10 +2,12 @@ package uz.pdp.lesson1vaz2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uz.pdp.lesson1vaz2.entity.Category;
 import uz.pdp.lesson1vaz2.entity.Language;
 import uz.pdp.lesson1vaz2.entity.Task;
 import uz.pdp.lesson1vaz2.payload.ApiResult;
 import uz.pdp.lesson1vaz2.payload.TaskDto;
+import uz.pdp.lesson1vaz2.repository.CategoryRepository;
 import uz.pdp.lesson1vaz2.repository.LanguageRepository;
 import uz.pdp.lesson1vaz2.repository.TaskRepository;
 
@@ -19,13 +21,15 @@ public class TaskService {
     TaskRepository taskRepository;
     @Autowired
     LanguageRepository languageRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     public ApiResult add(TaskDto taskDto) {
-        Optional<Language> optionalLanguage = languageRepository.findById(taskDto.getLanguageId());
-        if (!optionalLanguage.isPresent()) return new ApiResult("Language not found", false);
+        Optional<Category> optionalCategory = categoryRepository.findById(taskDto.getCategoryId());
+        if (!optionalCategory.isPresent()) return new ApiResult("Category not found", false);
         Task task = new Task();
         task.setHint(taskDto.getHint());
-        task.setLanguage(optionalLanguage.get());
+        task.setCategory(optionalCategory.get());
         task.setMethod(taskDto.getMethod());
         task.setName(taskDto.getName());
         task.setSolution(taskDto.getSolution());
@@ -58,14 +62,14 @@ public class TaskService {
     public ApiResult edit(Integer id, TaskDto taskDto) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (!optionalTask.isPresent()) return new ApiResult("Task not found", false);
-        Optional<Language> optionalLanguage = languageRepository.findById(taskDto.getLanguageId());
-        if (!optionalLanguage.isPresent()) return new ApiResult("Language not found", false);
+        Optional<Category> optionalCategory = categoryRepository.findById(taskDto.getCategoryId());
+        if (!optionalCategory.isPresent()) return new ApiResult("Category not found", false);
 
         Task task = optionalTask.get();
         task.setText(taskDto.getText());
         task.setSolution(taskDto.getSolution());
         task.setName(taskDto.getName());
-        task.setLanguage(optionalLanguage.get());
+        task.setCategory(optionalCategory.get());
         task.setHint(taskDto.getHint());
         task.setMethod(taskDto.getMethod());
         taskRepository.save(task);

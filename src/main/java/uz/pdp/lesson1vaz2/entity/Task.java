@@ -22,7 +22,7 @@ public class Task {
     private String method;
     private boolean hasStar;
     @ManyToOne
-    private Language language;
+    private Category category;
 
 
 }
